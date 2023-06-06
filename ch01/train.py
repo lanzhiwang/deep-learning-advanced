@@ -14,6 +14,9 @@ hidden_size = 10
 learning_rate = 1.0
 
 x, t = spiral.load_data()
+print('x', x.shape)  # (300, 2)
+print('t', t.shape)  # (300, 3)
+
 model = TwoLayerNet(input_size=2, hidden_size=hidden_size, output_size=3)
 optimizer = SGD(lr=learning_rate)
 
