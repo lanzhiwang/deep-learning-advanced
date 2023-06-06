@@ -3,7 +3,7 @@ import sys
 
 sys.path.append('..')
 from common import config
-# 在用GPU运行时，请打开下面的注释（需要cupy）
+# 在用GPU运行时, 请打开下面的注释(需要cupy)
 # ===============================================
 # config.GPU = True
 # ===============================================
@@ -40,7 +40,7 @@ trainer = Trainer(model, optimizer)
 trainer.fit(contexts, target, max_epoch, batch_size)
 trainer.plot()
 
-# 保存必要数据，以便后续使用
+# 保存必要数据, 以便后续使用
 word_vecs = model.word_vecs
 if config.GPU:
     word_vecs = to_cpu(word_vecs)

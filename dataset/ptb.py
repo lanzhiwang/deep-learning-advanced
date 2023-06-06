@@ -75,7 +75,7 @@ def load_vocab():
 
 def load_data(data_type='train'):
     '''
-        :param data_type: 数据的种类：'train' or 'test' or 'valid (val)'
+        :param data_type: 数据的种类: 'train' or 'test' or 'valid (val)'
         :return:
     '''
     if data_type == 'val': data_type = 'valid'

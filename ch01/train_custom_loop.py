@@ -35,7 +35,7 @@ for epoch in range(max_epoch):
         batch_x = x[iters * batch_size:(iters + 1) * batch_size]
         batch_t = t[iters * batch_size:(iters + 1) * batch_size]
 
-        # 计算梯度，更新参数
+        # 计算梯度, 更新参数
         loss = model.forward(batch_x, batch_t)
         model.backward()
         optimizer.update(model.params, model.grads)

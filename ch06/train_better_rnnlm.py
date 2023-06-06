@@ -3,7 +3,7 @@ import sys
 
 sys.path.append('..')
 from common import config
-# 在用GPU运行时，请打开下面的注释（需要cupy）
+# 在用GPU运行时, 请打开下面的注释(需要cupy)
 # ==============================================
 # config.GPU = True
 # ==============================================

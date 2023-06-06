@@ -27,7 +27,7 @@ def cross_entropy_error(y, t):
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
 
-    # 在监督标签为one-hot-vector的情况下，转换为正确解标签的索引
+    # 在监督标签为one-hot-vector的情况下, 转换为正确解标签的索引
     if t.size == y.size:
         t = t.argmax(axis=1)
 

@@ -10,7 +10,7 @@ from common.base_model import BaseModel
 class BetterRnnlm(BaseModel):
     '''
      利用2个LSTM层并在各层使用Dropout的模型
-     基于[1]提出的模型，利用weight tying[2][3]
+     基于[1]提出的模型, 利用weight tying[2][3]
 
      [1] Recurrent Neural Network Regularization (https://arxiv.org/abs/1409.2329)
      [2] Using the Output Embedding to Improve Language Models (https://arxiv.org/abs/1608.05859)

@@ -43,7 +43,7 @@ class Trainer:
                 batch_x = x[iters * batch_size:(iters + 1) * batch_size]
                 batch_t = t[iters * batch_size:(iters + 1) * batch_size]
 
-                # 计算梯度，更新参数
+                # 计算梯度, 更新参数
                 loss = model.forward(batch_x, batch_t)
                 model.backward()
                 params, grads = remove_duplicate(model.params,
@@ -127,7 +127,7 @@ class RnnlmTrainer:
                 batch_x, batch_t = self.get_batch(xs, ts, batch_size,
                                                   time_size)
 
-                # 计算梯度，更新参数
+                # 计算梯度, 更新参数
                 loss = model.forward(batch_x, batch_t)
                 model.backward()
                 params, grads = remove_duplicate(model.params,
@@ -164,7 +164,7 @@ class RnnlmTrainer:
 
 def remove_duplicate(params, grads):
     '''
-    将参数列表中重复的权重整合为1个，
+    将参数列表中重复的权重整合为1个,
     加上与该权重对应的梯度
     '''
     params, grads = params[:], grads[:]  # copy list
@@ -181,7 +181,7 @@ def remove_duplicate(params, grads):
                     find_flg = True
                     params.pop(j)
                     grads.pop(j)
-                # 在作为转置矩阵共享权重的情况下（weight tying）
+                # 在作为转置矩阵共享权重的情况下(weight tying)
                 elif params[i].ndim == 2 and params[j].ndim == 2 and \
                      params[i].T.shape == params[j].shape and np.all(params[i].T == params[j]):
                     grads[i] += grads[j].T

@@ -102,9 +102,9 @@ class LSTM:
 
         Parameters
         ----------
-        Wx: 输入`x`用的权重参数（整合了4个权重）
-        Wh: 隐藏状态`h`用的权重参数（整合了4个权重）
-        b: 偏置（整合了4个偏置）
+        Wx: 输入`x`用的权重参数(整合了4个权重)
+        Wh: 隐藏状态`h`用的权重参数(整合了4个权重)
+        b: 偏置(整合了4个偏置)
         '''
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -314,7 +314,7 @@ class TimeSoftmaxWithLoss:
 
         mask = (ts != self.ignore_label)
 
-        # 按批次大小和时序大小进行整理（reshape）
+        # 按批次大小和时序大小进行整理(reshape)
         xs = xs.reshape(N * T, V)
         ts = ts.reshape(N * T)
         mask = mask.reshape(N * T)
@@ -395,13 +395,13 @@ class TimeBiLSTM:
 
 # ====================================================================== #
 # 如下所示的层是本书中没有说明的层的实现
-# 或者为了使代码容易理解而牺牲了处理速度的层的实现。
+# 或者为了使代码容易理解而牺牲了处理速度的层的实现.
 #
 # TimeSigmoidWithLoss: 用于时序数据的sigmoid损失层
 # GRU: GRU层
 # TimeGRU: 用于时序数据的GRU层
 # BiTimeLSTM: 双向LSTM层
-# Simple_TimeSoftmaxWithLoss：简单的TimeSoftmaxWithLoss层的实现
+# Simple_TimeSoftmaxWithLoss: 简单的TimeSoftmaxWithLoss层的实现
 # Simple_TimeAffine: 简单的TimeAffine层的实现
 # ====================================================================== #
 
@@ -446,9 +446,9 @@ class GRU:
 
         Parameters
         ----------
-        Wx: 用于输入`x`的权重参数（整合了3个权重）
-        Wh: 用于隐藏状态`h` 的权重参数（整合了3个权重）
-        b: 偏置（整合了3个偏置）
+        Wx: 用于输入`x`的权重参数(整合了3个权重)
+        Wh: 用于隐藏状态`h` 的权重参数(整合了3个权重)
+        b: 偏置(整合了3个偏置)
         '''
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]

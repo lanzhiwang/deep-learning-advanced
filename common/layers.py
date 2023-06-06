@@ -4,6 +4,8 @@ from common.config import GPU
 from common.functions import softmax, cross_entropy_error
 
 
+# 矩阵乘积称为 MatMul 节点
+# np.dot(x, W) 实现了 MatMul 层
 class MatMul:
 
     def __init__(self, W):
@@ -21,10 +23,13 @@ class MatMul:
         W, = self.params
         dx = np.dot(dout, W.T)
         dW = np.dot(self.x.T, dout)
+        # grads[0] = dW 的赋值相当于浅复制
+        # grads[0][...] = dW 的覆盖相当于深复制
         self.grads[0][...] = dW
         return dx
 
 
+# np.dot(x, W) + b 实现了 Affine 层
 class Affine:
 
     def __init__(self, W, b):
@@ -66,6 +71,7 @@ class Softmax:
         return dx
 
 
+# Softmax 函数和交叉熵误差一起实现为 Softmax with Loss 层
 class SoftmaxWithLoss:
 
     def __init__(self):
@@ -77,7 +83,7 @@ class SoftmaxWithLoss:
         self.t = t
         self.y = softmax(x)
 
-        # 在监督标签为one-hot向量的情况下，转换为正确解标签的索引
+        # 在监督标签为one-hot向量的情况下, 转换为正确解标签的索引
         if self.t.size == self.y.size:
             self.t = self.t.argmax(axis=1)
 
@@ -95,6 +101,7 @@ class SoftmaxWithLoss:
         return dx
 
 
+# Sigmoid
 class Sigmoid:
 
     def __init__(self):

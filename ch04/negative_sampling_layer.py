@@ -70,7 +70,7 @@ class UnigramSampler:
                                                          replace=False,
                                                          p=p)
         else:
-            # 在用GPU(cupy）计算时，优先速度
+            # 在用GPU(cupy)计算时, 优先速度
             # 有时目标词存在于负例中
             negative_sample = np.random.choice(self.vocab_size,
                                                size=(batch_size,
