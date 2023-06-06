@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.np import *  # import numpy as np
 from common.layers import Embedding
@@ -7,6 +8,7 @@ from ch04.negative_sampling_layer import NegativeSamplingLoss
 
 
 class CBOW:
+
     def __init__(self, vocab_size, hidden_size, window_size, corpus):
         V, H = vocab_size, hidden_size
 
@@ -19,7 +21,10 @@ class CBOW:
         for i in range(2 * window_size):
             layer = Embedding(W_in)  # 使用Embedding层
             self.in_layers.append(layer)
-        self.ns_loss = NegativeSamplingLoss(W_out, corpus, power=0.75, sample_size=5)
+        self.ns_loss = NegativeSamplingLoss(W_out,
+                                            corpus,
+                                            power=0.75,
+                                            sample_size=5)
 
         # 将所有的权重和梯度整理到列表中
         layers = self.in_layers + [self.ns_loss]

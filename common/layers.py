@@ -5,6 +5,7 @@ from common.functions import softmax, cross_entropy_error
 
 
 class MatMul:
+
     def __init__(self, W):
         self.params = [W]
         self.grads = [np.zeros_like(W)]
@@ -25,6 +26,7 @@ class MatMul:
 
 
 class Affine:
+
     def __init__(self, W, b):
         self.params = [W, b]
         self.grads = [np.zeros_like(W), np.zeros_like(b)]
@@ -48,6 +50,7 @@ class Affine:
 
 
 class Softmax:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.out = None
@@ -64,6 +67,7 @@ class Softmax:
 
 
 class SoftmaxWithLoss:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.y = None  # softmax的输出
@@ -92,6 +96,7 @@ class SoftmaxWithLoss:
 
 
 class Sigmoid:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.out = None
@@ -107,6 +112,7 @@ class Sigmoid:
 
 
 class SigmoidWithLoss:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.loss = None
@@ -132,6 +138,7 @@ class Dropout:
     '''
     http://arxiv.org/abs/1207.0580
     '''
+
     def __init__(self, dropout_ratio=0.5):
         self.params, self.grads = [], []
         self.dropout_ratio = dropout_ratio
@@ -149,6 +156,7 @@ class Dropout:
 
 
 class Embedding:
+
     def __init__(self, W):
         self.params = [W]
         self.grads = [np.zeros_like(W)]

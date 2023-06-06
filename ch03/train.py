@@ -1,11 +1,11 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')  # 为了引入父目录的文件而进行的设定
 from common.trainer import Trainer
 from common.optimizer import Adam
 from simple_cbow import SimpleCBOW
 from common.util import preprocess, create_contexts_target, convert_one_hot
-
 
 window_size = 1
 hidden_size = 5

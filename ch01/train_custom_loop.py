@@ -1,12 +1,12 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')  # 为了引入父目录的文件而进行的设定
 import numpy as np
 from common.optimizer import SGD
 from dataset import spiral
 import matplotlib.pyplot as plt
 from two_layer_net import TwoLayerNet
-
 
 # 设定超参数
 max_epoch = 300
@@ -32,8 +32,8 @@ for epoch in range(max_epoch):
     t = t[idx]
 
     for iters in range(max_iters):
-        batch_x = x[iters*batch_size:(iters+1)*batch_size]
-        batch_t = t[iters*batch_size:(iters+1)*batch_size]
+        batch_x = x[iters * batch_size:(iters + 1) * batch_size]
+        batch_t = t[iters * batch_size:(iters + 1) * batch_size]
 
         # 计算梯度，更新参数
         loss = model.forward(batch_x, batch_t)
@@ -44,13 +44,12 @@ for epoch in range(max_epoch):
         loss_count += 1
 
         # 定期输出学习过程
-        if (iters+1) % 10 == 0:
+        if (iters + 1) % 10 == 0:
             avg_loss = total_loss / loss_count
-            print('| epoch %d |  iter %d / %d | loss %.2f'
-                  % (epoch + 1, iters + 1, max_iters, avg_loss))
+            print('| epoch %d |  iter %d / %d | loss %.2f' %
+                  (epoch + 1, iters + 1, max_iters, avg_loss))
             loss_list.append(avg_loss)
             total_loss, loss_count = 0, 0
-
 
 # 绘制学习结果
 plt.plot(np.arange(len(loss_list)), loss_list, label='train')
@@ -76,5 +75,8 @@ N = 100
 CLS_NUM = 3
 markers = ['o', 'x', '^']
 for i in range(CLS_NUM):
-    plt.scatter(x[i*N:(i+1)*N, 0], x[i*N:(i+1)*N, 1], s=40, marker=markers[i])
+    plt.scatter(x[i * N:(i + 1) * N, 0],
+                x[i * N:(i + 1) * N, 1],
+                s=40,
+                marker=markers[i])
 plt.show()

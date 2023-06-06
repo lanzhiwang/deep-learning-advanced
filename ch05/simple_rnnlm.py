@@ -1,11 +1,13 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import numpy as np
 from common.time_layers import *
 
 
 class SimpleRnnlm:
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn

@@ -1,11 +1,13 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.time_layers import *
 from common.base_model import BaseModel
 
 
 class Encoder:
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
@@ -38,6 +40,7 @@ class Encoder:
 
 
 class Decoder:
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
@@ -91,6 +94,7 @@ class Decoder:
 
 
 class Seq2seq(BaseModel):
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         self.encoder = Encoder(V, D, H)

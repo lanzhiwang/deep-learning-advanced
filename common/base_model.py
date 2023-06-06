@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import os
 import pickle
@@ -8,6 +9,7 @@ from common.util import to_gpu, to_cpu
 
 
 class BaseModel:
+
     def __init__(self):
         self.params, self.grads = None, None
 

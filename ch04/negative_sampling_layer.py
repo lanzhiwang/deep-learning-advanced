@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.np import *  # import numpy as np
 from common.layers import Embedding, SigmoidWithLoss
@@ -7,6 +8,7 @@ import collections
 
 
 class EmbeddingDot:
+
     def __init__(self, W):
         self.embed = Embedding(W)
         self.params = self.embed.params
@@ -31,6 +33,7 @@ class EmbeddingDot:
 
 
 class UnigramSampler:
+
     def __init__(self, corpus, power, sample_size):
         self.sample_size = sample_size
         self.vocab_size = None
@@ -54,29 +57,39 @@ class UnigramSampler:
         batch_size = target.shape[0]
 
         if not GPU:
-            negative_sample = np.zeros((batch_size, self.sample_size), dtype=np.int32)
+            negative_sample = np.zeros((batch_size, self.sample_size),
+                                       dtype=np.int32)
 
             for i in range(batch_size):
                 p = self.word_p.copy()
                 target_idx = target[i]
                 p[target_idx] = 0
                 p /= p.sum()
-                negative_sample[i, :] = np.random.choice(self.vocab_size, size=self.sample_size, replace=False, p=p)
+                negative_sample[i, :] = np.random.choice(self.vocab_size,
+                                                         size=self.sample_size,
+                                                         replace=False,
+                                                         p=p)
         else:
             # 在用GPU(cupy）计算时，优先速度
             # 有时目标词存在于负例中
-            negative_sample = np.random.choice(self.vocab_size, size=(batch_size, self.sample_size),
-                                               replace=True, p=self.word_p)
+            negative_sample = np.random.choice(self.vocab_size,
+                                               size=(batch_size,
+                                                     self.sample_size),
+                                               replace=True,
+                                               p=self.word_p)
 
         return negative_sample
 
 
 class NegativeSamplingLoss:
+
     def __init__(self, W, corpus, power=0.75, sample_size=5):
         self.sample_size = sample_size
         self.sampler = UnigramSampler(corpus, power, sample_size)
         self.loss_layers = [SigmoidWithLoss() for _ in range(sample_size + 1)]
-        self.embed_dot_layers = [EmbeddingDot(W) for _ in range(sample_size + 1)]
+        self.embed_dot_layers = [
+            EmbeddingDot(W) for _ in range(sample_size + 1)
+        ]
 
         self.params, self.grads = [], []
         for layer in self.embed_dot_layers:

@@ -1,11 +1,13 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.time_layers import *
 from seq2seq import Seq2seq, Encoder
 
 
 class PeekyDecoder:
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
@@ -80,6 +82,7 @@ class PeekyDecoder:
 
 
 class PeekySeq2seq(Seq2seq):
+
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
         self.encoder = Encoder(V, D, H)

@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.time_layers import *
 from common.np import *  # import numpy as np
@@ -15,8 +16,12 @@ class BetterRnnlm(BaseModel):
      [2] Using the Output Embedding to Improve Language Models (https://arxiv.org/abs/1608.05859)
      [3] Tying Word Vectors and Word Classifiers (https://arxiv.org/pdf/1611.01462.pdf)
     '''
-    def __init__(self, vocab_size=10000, wordvec_size=650,
-                 hidden_size=650, dropout_ratio=0.5):
+
+    def __init__(self,
+                 vocab_size=10000,
+                 wordvec_size=650,
+                 hidden_size=650,
+                 dropout_ratio=0.5):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
 

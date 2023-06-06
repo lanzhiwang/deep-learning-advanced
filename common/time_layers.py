@@ -5,6 +5,7 @@ from common.functions import softmax, sigmoid
 
 
 class RNN:
+
     def __init__(self, Wx, Wh, b):
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -22,7 +23,7 @@ class RNN:
         Wx, Wh, b = self.params
         x, h_prev, h_next = self.cache
 
-        dt = dh_next * (1 - h_next ** 2)
+        dt = dh_next * (1 - h_next**2)
         db = np.sum(dt, axis=0)
         dWh = np.dot(h_prev.T, dt)
         dh_prev = np.dot(dt, Wh.T)
@@ -37,6 +38,7 @@ class RNN:
 
 
 class TimeRNN:
+
     def __init__(self, Wx, Wh, b, stateful=False):
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -94,6 +96,7 @@ class TimeRNN:
 
 
 class LSTM:
+
     def __init__(self, Wx, Wh, b):
         '''
 
@@ -114,9 +117,9 @@ class LSTM:
         A = np.dot(x, Wx) + np.dot(h_prev, Wh) + b
 
         f = A[:, :H]
-        g = A[:, H:2*H]
-        i = A[:, 2*H:3*H]
-        o = A[:, 3*H:]
+        g = A[:, H:2 * H]
+        i = A[:, 2 * H:3 * H]
+        o = A[:, 3 * H:]
 
         f = sigmoid(f)
         g = np.tanh(g)
@@ -135,7 +138,7 @@ class LSTM:
 
         tanh_c_next = np.tanh(c_next)
 
-        ds = dc_next + (dh_next * o) * (1 - tanh_c_next ** 2)
+        ds = dc_next + (dh_next * o) * (1 - tanh_c_next**2)
 
         dc_prev = ds * f
 
@@ -147,7 +150,7 @@ class LSTM:
         di *= i * (1 - i)
         df *= f * (1 - f)
         do *= o * (1 - o)
-        dg *= (1 - g ** 2)
+        dg *= (1 - g**2)
 
         dA = np.hstack((df, dg, di, do))
 
@@ -166,6 +169,7 @@ class LSTM:
 
 
 class TimeLSTM:
+
     def __init__(self, Wx, Wh, b, stateful=False):
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -226,6 +230,7 @@ class TimeLSTM:
 
 
 class TimeEmbedding:
+
     def __init__(self, W):
         self.params = [W]
         self.grads = [np.zeros_like(W)]
@@ -260,6 +265,7 @@ class TimeEmbedding:
 
 
 class TimeAffine:
+
     def __init__(self, W, b):
         self.params = [W, b]
         self.grads = [np.zeros_like(W), np.zeros_like(b)]
@@ -269,7 +275,7 @@ class TimeAffine:
         N, T, D = x.shape
         W, b = self.params
 
-        rx = x.reshape(N*T, -1)
+        rx = x.reshape(N * T, -1)
         out = np.dot(rx, W) + b
         self.x = x
         return out.reshape(N, T, -1)
@@ -279,8 +285,8 @@ class TimeAffine:
         N, T, D = x.shape
         W, b = self.params
 
-        dout = dout.reshape(N*T, -1)
-        rx = x.reshape(N*T, -1)
+        dout = dout.reshape(N * T, -1)
+        rx = x.reshape(N * T, -1)
 
         db = np.sum(dout, axis=0)
         dW = np.dot(rx.T, dout)
@@ -294,6 +300,7 @@ class TimeAffine:
 
 
 class TimeSoftmaxWithLoss:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.cache = None
@@ -336,6 +343,7 @@ class TimeSoftmaxWithLoss:
 
 
 class TimeDropout:
+
     def __init__(self, dropout_ratio=0.5):
         self.params, self.grads = [], []
         self.dropout_ratio = dropout_ratio
@@ -357,8 +365,8 @@ class TimeDropout:
 
 
 class TimeBiLSTM:
-    def __init__(self, Wx1, Wh1, b1,
-                 Wx2, Wh2, b2, stateful=False):
+
+    def __init__(self, Wx1, Wh1, b1, Wx2, Wh2, b2, stateful=False):
         self.forward_lstm = TimeLSTM(Wx1, Wh1, b1, stateful)
         self.backward_lstm = TimeLSTM(Wx2, Wh2, b2, stateful)
         self.params = self.forward_lstm.params + self.backward_lstm.params
@@ -384,6 +392,7 @@ class TimeBiLSTM:
         dxs = dxs1 + dxs2
         return dxs
 
+
 # ====================================================================== #
 # 如下所示的层是本书中没有说明的层的实现
 # 或者为了使代码容易理解而牺牲了处理速度的层的实现。
@@ -398,6 +407,7 @@ class TimeBiLSTM:
 
 
 class TimeSigmoidWithLoss:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.xs_shape = None
@@ -421,7 +431,7 @@ class TimeSigmoidWithLoss:
         N, T = self.xs_shape
         dxs = np.empty(self.xs_shape, dtype='f')
 
-        dout *= 1/T
+        dout *= 1 / T
         for t in range(T):
             layer = self.layers[t]
             dxs[:, t] = layer.backward(dout)
@@ -430,6 +440,7 @@ class TimeSigmoidWithLoss:
 
 
 class GRU:
+
     def __init__(self, Wx, Wh, b):
         '''
 
@@ -452,8 +463,8 @@ class GRU:
 
         z = sigmoid(np.dot(x, Wxz) + np.dot(h_prev, Whz) + bz)
         r = sigmoid(np.dot(x, Wxr) + np.dot(h_prev, Whr) + br)
-        h_hat = np.tanh(np.dot(x, Wxh) + np.dot(r*h_prev, Whh) + bh)
-        h_next = (1-z) * h_prev + z * h_hat
+        h_hat = np.tanh(np.dot(x, Wxh) + np.dot(r * h_prev, Whh) + bh)
+        h_next = (1 - z) * h_prev + z * h_hat
 
         self.cache = (x, h_prev, z, r, h_hat)
 
@@ -466,11 +477,11 @@ class GRU:
         Whz, Whr, Whh = Wh[:, :H], Wh[:, H:2 * H], Wh[:, 2 * H:]
         x, h_prev, z, r, h_hat = self.cache
 
-        dh_hat =dh_next * z
-        dh_prev = dh_next * (1-z)
+        dh_hat = dh_next * z
+        dh_prev = dh_next * (1 - z)
 
         # tanh
-        dt = dh_hat * (1 - h_hat ** 2)
+        dt = dh_hat * (1 - h_hat**2)
         dbh = np.sum(dt, axis=0)
         dWhh = np.dot((r * h_prev).T, dt)
         dhr = np.dot(dt, Whh.T)
@@ -480,7 +491,7 @@ class GRU:
 
         # update gate(z)
         dz = dh_next * h_hat - dh_next * h_prev
-        dt = dz * z * (1-z)
+        dt = dz * z * (1 - z)
         dbz = np.sum(dt, axis=0)
         dWhz = np.dot(h_prev.T, dt)
         dh_prev += np.dot(dt, Whz.T)
@@ -489,7 +500,7 @@ class GRU:
 
         # rest gate(r)
         dr = dhr * h_prev
-        dt = dr * r * (1-r)
+        dt = dr * r * (1 - r)
         dbr = np.sum(dt, axis=0)
         dWhr = np.dot(h_prev.T, dt)
         dh_prev += np.dot(dt, Whr.T)
@@ -508,6 +519,7 @@ class GRU:
 
 
 class TimeGRU:
+
     def __init__(self, Wx, Wh, b, stateful=False):
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -563,6 +575,7 @@ class TimeGRU:
 
 
 class Simple_TimeSoftmaxWithLoss:
+
     def __init__(self):
         self.params, self.grads = [], []
         self.cache = None
@@ -586,7 +599,7 @@ class Simple_TimeSoftmaxWithLoss:
         N, T, V = xs.shape
         dxs = np.empty(xs.shape, dtype='f')
 
-        dout *= 1/T
+        dout *= 1 / T
         for t in range(T):
             layer = layers[t]
             dxs[:, t, :] = layer.backward(dout)
@@ -595,6 +608,7 @@ class Simple_TimeSoftmaxWithLoss:
 
 
 class Simple_TimeAffine:
+
     def __init__(self, W, b):
         self.W, self.b = W, b
         self.dW, self.db = None, None
@@ -627,7 +641,3 @@ class Simple_TimeAffine:
             self.db += layer.db
 
         return dxs
-
-
-
-

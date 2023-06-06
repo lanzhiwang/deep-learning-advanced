@@ -1,11 +1,11 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')  # 为了引入父目录的文件而进行的设定
 from common.optimizer import SGD
 from common.trainer import Trainer
 from dataset import spiral
 from two_layer_net import TwoLayerNet
-
 
 # 设定超参数
 max_epoch = 300

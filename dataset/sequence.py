@@ -1,9 +1,9 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import os
 import numpy
-
 
 id_to_char = {}
 char_to_id = {}

@@ -3,6 +3,7 @@ import numpy as np
 
 
 class Sigmoid:
+
     def __init__(self):
         self.params = []
 
@@ -11,6 +12,7 @@ class Sigmoid:
 
 
 class Affine:
+
     def __init__(self, W, b):
         self.params = [W, b]
 
@@ -21,6 +23,7 @@ class Affine:
 
 
 class TwoLayerNet:
+
     def __init__(self, input_size, hidden_size, output_size):
         I, H, O = input_size, hidden_size, output_size
 
@@ -31,11 +34,7 @@ class TwoLayerNet:
         b2 = np.random.randn(O)
 
         # 生成层
-        self.layers = [
-            Affine(W1, b1),
-            Sigmoid(),
-            Affine(W2, b2)
-        ]
+        self.layers = [Affine(W1, b1), Sigmoid(), Affine(W2, b2)]
 
         # 将所有的权重整理到列表中
         self.params = []

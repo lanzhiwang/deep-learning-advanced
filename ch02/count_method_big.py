@@ -1,10 +1,10 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import numpy as np
 from common.util import most_similar, create_co_matrix, ppmi
 from dataset import ptb
-
 
 window_size = 2
 wordvec_size = 100
@@ -20,7 +20,9 @@ print('calculating SVD ...')
 try:
     # truncated SVD (fast!)
     from sklearn.utils.extmath import randomized_svd
-    U, S, V = randomized_svd(W, n_components=wordvec_size, n_iter=5,
+    U, S, V = randomized_svd(W,
+                             n_components=wordvec_size,
+                             n_iter=5,
                              random_state=None)
 except ImportError:
     # SVD (slow)

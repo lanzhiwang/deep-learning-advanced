@@ -1,9 +1,9 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from rnnlm_gen import RnnlmGen
 from dataset import ptb
-
 
 corpus, word_to_id, id_to_word = ptb.load_data('train')
 vocab_size = len(word_to_id)

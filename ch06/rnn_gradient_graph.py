@@ -2,7 +2,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 N = 2  # mini-batch的大小
 H = 3  # 隐藏状态向量的维数
 T = 20  # 时序数据的长度

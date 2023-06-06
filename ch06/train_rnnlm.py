@@ -1,12 +1,12 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common.optimizer import SGD
 from common.trainer import RnnlmTrainer
 from common.util import eval_perplexity
 from dataset import ptb
 from rnnlm import Rnnlm
-
 
 # 设定超参数
 batch_size = 20
@@ -30,7 +30,12 @@ optimizer = SGD(lr)
 trainer = RnnlmTrainer(model, optimizer)
 
 # 应用梯度裁剪进行学习
-trainer.fit(xs, ts, max_epoch, batch_size, time_size, max_grad,
+trainer.fit(xs,
+            ts,
+            max_epoch,
+            batch_size,
+            time_size,
+            max_grad,
             eval_interval=20)
 trainer.plot(ylim=(0, 500))
 

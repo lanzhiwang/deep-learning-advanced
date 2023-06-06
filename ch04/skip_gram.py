@@ -1,11 +1,13 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')  # 为了引入父目录的文件而进行的设定
 from common.layers import *
 from ch04.negative_sampling_layer import NegativeSamplingLoss
 
 
 class SkipGram:
+
     def __init__(self, vocab_size, hidden_size, window_size, corpus):
         V, H = vocab_size, hidden_size
         rn = np.random.randn
@@ -18,7 +20,10 @@ class SkipGram:
         self.in_layer = Embedding(W_in)
         self.loss_layers = []
         for i in range(2 * window_size):
-            layer = NegativeSamplingLoss(W_out, corpus, power=0.75, sample_size=5)
+            layer = NegativeSamplingLoss(W_out,
+                                         corpus,
+                                         power=0.75,
+                                         sample_size=5)
             self.loss_layers.append(layer)
 
         # 将所有的权重和梯度整理到列表中

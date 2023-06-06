@@ -1,9 +1,9 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import numpy as np
 from common.layers import MatMul
-
 
 # 样本的上下文数据
 c0 = np.array([[1, 0, 0, 0, 0, 0, 0]])

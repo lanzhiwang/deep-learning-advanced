@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 import numpy as np
 from common.functions import softmax
@@ -8,6 +9,7 @@ from ch06.better_rnnlm import BetterRnnlm
 
 
 class RnnlmGen(Rnnlm):
+
     def generate(self, start_id, skip_ids=None, sample_size=100):
         word_ids = [start_id]
 
@@ -32,6 +34,7 @@ class RnnlmGen(Rnnlm):
 
 
 class BetterRnnlmGen(BetterRnnlm):
+
     def generate(self, start_id, skip_ids=None, sample_size=100):
         word_ids = [start_id]
 

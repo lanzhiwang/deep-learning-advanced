@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common import config
 # 在用GPU运行时，请打开下面的注释（需要cupy）
@@ -11,7 +12,6 @@ from common.trainer import RnnlmTrainer
 from common.util import eval_perplexity, to_gpu
 from dataset import ptb
 from better_rnnlm import BetterRnnlm
-
 
 # 设定超参数
 wordvec_size = 650
@@ -42,8 +42,12 @@ trainer = RnnlmTrainer(model, optimizer)
 
 best_ppl = float('inf')
 for epoch in range(max_epoch):
-    trainer.fit(xs, ts, max_epoch=1, batch_size=batch_size,
-                time_size=time_size, max_grad=max_grad)
+    trainer.fit(xs,
+                ts,
+                max_epoch=1,
+                batch_size=batch_size,
+                time_size=time_size,
+                max_grad=max_grad)
 
     model.reset_state()
     ppl = eval_perplexity(model, corpus_val)
@@ -58,7 +62,6 @@ for epoch in range(max_epoch):
 
     model.reset_state()
     print('-' * 50)
-
 
 # 基于验证数据进行评价
 model.reset_state()

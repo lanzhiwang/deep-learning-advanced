@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from common import config
 # 在用GPU运行时，请打开下面的注释（需要cupy）
@@ -14,7 +15,6 @@ from cbow import CBOW
 from skip_gram import SkipGram
 from common.util import create_contexts_target, to_cpu, to_gpu
 from dataset import ptb
-
 
 # 设定超参数
 window_size = 5

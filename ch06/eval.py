@@ -1,11 +1,11 @@
 # coding: utf-8
 import sys
+
 sys.path.append('..')
 from rnnlm import Rnnlm
 from better_rnnlm import BetterRnnlm
 from dataset import ptb
 from common.util import eval_perplexity
-
 
 if __name__ == '__main__':
     model = Rnnlm()
