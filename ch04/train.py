@@ -30,6 +30,20 @@ contexts, target = create_contexts_target(corpus, window_size)
 if config.GPU:
     contexts, target = to_gpu(contexts), to_gpu(target)
 
+print("contexts:", contexts)
+# contexts:
+# [
+#     [0 2]
+#     [1 3]
+#     [2 4]
+#     [3 1]
+#     [4 5]
+#     [1 6]
+# ]
+
+print("target:", target)
+# target: [1 2 3 4 1 5]
+
 # 生成模型等
 model = CBOW(vocab_size, hidden_size, window_size, corpus)
 # model = SkipGram(vocab_size, hidden_size, window_size, corpus)

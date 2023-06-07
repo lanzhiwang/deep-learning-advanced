@@ -170,9 +170,36 @@ class Embedding:
         self.idx = None
 
     def forward(self, idx):
+        # print("Embedding forward idx:", idx)
+        # Embedding forward idx: [4 1 1]
+
         W, = self.params
+        # print("Embedding forward W:", W)
+        # print("Embedding forward W:", W.shape)
+        # Embedding forward W:
+        # [
+        #     [-0.00264533  0.00962379  0.00976532 -0.00759188  0.003047  ]
+        #     [ 0.01875792  0.00838653  0.01763416 -0.00275273 -0.01376551]
+        #     [ 0.00417071 -0.02550101 -0.00050339  0.0208165  -0.010699  ]
+        #     [-0.0036964  -0.00669661  0.0057202  -0.00550012 -0.00081953]
+        #     [ 0.00830469  0.01215741  0.0028348   0.0058751  -0.01643123]
+        #     [-0.00399287  0.01282025 -0.01045556  0.01149138  0.00257922]
+        #     [-0.00461878 -0.01553948 -0.00872226  0.00758368  0.00033413]
+        # ]
+        # Embedding forward W: (7, 5)
+
         self.idx = idx
         out = W[idx]
+        # print("Embedding forward out:", out)
+        # print("Embedding forward out:", out.shape)
+        # Embedding forward out:
+        # [
+        #     [ 0.00830469  0.01215741  0.0028348   0.0058751  -0.01643123]
+        #     [ 0.01875792  0.00838653  0.01763416 -0.00275273 -0.01376551]
+        #     [ 0.01875792  0.00838653  0.01763416 -0.00275273 -0.01376551]
+        # ]
+        # Embedding forward out: (3, 5)
+
         return out
 
     def backward(self, dout):

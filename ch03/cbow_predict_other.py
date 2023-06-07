@@ -6,13 +6,15 @@ import numpy as np
 from common.layers import MatMul
 
 # 样本的上下文数据
-c0 = np.array([[1, 0, 0, 0, 0, 0, 0]])
-print("c0:", c0.shape)
-# c0: (1, 7)
-
-c1 = np.array([[0, 0, 1, 0, 0, 0, 0]])
-print("c1:", c1.shape)
-# c1: (1, 7)
+c = np.array([[1, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0]])
+print("c:", c)
+print("c:", c.shape)
+# c:
+# [
+#     [1 0 0 0 0 0 0]
+#     [0 0 1 0 0 0 0]
+# ]
+# c: (2, 7)
 
 # 初始化权重
 # W_in = np.random.randn(7, 3)
@@ -39,24 +41,27 @@ print("W_out:", W_out)
 # ]
 
 # 生成层
-in_layer0 = MatMul(W_in)
-in_layer1 = MatMul(W_in)
+in_layer = MatMul(W_in)
 out_layer = MatMul(W_out)
 
 # 正向传播
-h0 = in_layer0.forward(c0)
-print("h0:", h0)
-print("h0:", h0.shape)
-# h0: [[0 1 2]]
-# h0: (1, 3)
+h = in_layer.forward(c)
+print("h:", h)
+print("h:", h.shape)
+# h:
+# [
+#     [0 1 2]
+#     [6 7 8]
+# ]
+# h: (2, 3)
 
-h1 = in_layer1.forward(c1)
-print("h1:", h1)
-print("h1:", h1.shape)
-# h1: [[6 7 8]]
-# h1: (1, 3)
+h = np.sum(h, axis=0, keepdims=True)
+print("h:", h)
+print("h:", h.shape)
+# h: [[ 6  8 10]]
+# h: (1, 3)
 
-h = 0.5 * (h0 + h1)
+h = 0.5 * h
 print("h:", h)
 print("h:", h.shape)
 # h: [[3. 4. 5.]]

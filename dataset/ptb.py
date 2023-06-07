@@ -24,16 +24,40 @@ save_file = {
 vocab_file = 'ptb.vocab.pkl'
 
 dataset_dir = os.path.dirname(os.path.abspath(__file__))
+# print(__file__)  # /deep-learning-advanced/dataset/ptb.py
+# print(os.path.abspath(__file__))  # /deep-learning-advanced/dataset/ptb.py
+# print(os.path.dirname(os.path.abspath(__file__)))  # /deep-learning-advanced/dataset
+# print(dataset_dir)  # /deep-learning-advanced/dataset
 
 
 def _download(file_name):
+    # print("_download file_name:", file_name)
+    # _download file_name: ptb.train.txt
+    # _download file_name: ptb.train.txt
+    # _download file_name: ptb.valid.txt
+    # _download file_name: ptb.test.txt
+
     file_path = dataset_dir + '/' + file_name
+    # print("_download file_path:", file_path)
+    # _download file_path: /deep-learning-advanced/dataset/ptb.train.txt
+    # _download file_path: /deep-learning-advanced/dataset/ptb.train.txt
+    # _download file_path: /deep-learning-advanced/dataset/ptb.valid.txt
+    # _download file_path: /deep-learning-advanced/dataset/ptb.test.txt
+
     if os.path.exists(file_path):
         return
 
     print('Downloading ' + file_name + ' ... ')
+    # Downloading ptb.train.txt ...
+    # Downloading ptb.valid.txt ...
+    # Downloading ptb.test.txt ...
 
     try:
+        # print("_download url:", url_base + file_name, file_path)
+        # _download url: https://raw.githubusercontent.com/tomsercu/lstm/master/data/ptb.train.txt /deep-learning-advanced/dataset/ptb.train.txt
+        # _download url: https://raw.githubusercontent.com/tomsercu/lstm/master/data/ptb.valid.txt /deep-learning-advanced/dataset/ptb.valid.txt
+        # _download url: https://raw.githubusercontent.com/tomsercu/lstm/master/data/ptb.test.txt /deep-learning-advanced/dataset/ptb.test.txt
+
         urllib.request.urlretrieve(url_base + file_name, file_path)
     except urllib.error.URLError:
         import ssl
@@ -45,6 +69,8 @@ def _download(file_name):
 
 def load_vocab():
     vocab_path = dataset_dir + '/' + vocab_file
+    # print("load_vocab vocab_path:", vocab_path)
+    # load_vocab vocab_path: /deep-learning-advanced/dataset/ptb.vocab.pkl
 
     if os.path.exists(vocab_path):
         with open(vocab_path, 'rb') as f:
@@ -55,13 +81,19 @@ def load_vocab():
     id_to_word = {}
     data_type = 'train'
     file_name = key_file[data_type]
+    # print("load_vocab file_name:", file_name)
+    # load_vocab file_name: ptb.train.txt
+
     file_path = dataset_dir + '/' + file_name
+    # print("load_vocab file_path:", file_path)
+    # load_vocab file_path: /deep-learning-advanced/dataset/ptb.train.txt
 
     _download(file_name)
 
     words = open(file_path).read().replace('\n', '<eos>').strip().split()
 
     for i, word in enumerate(words):
+        # print("i, word:", i, word)
         if word not in word_to_id:
             tmp_id = len(word_to_id)
             word_to_id[word] = tmp_id
@@ -78,17 +110,40 @@ def load_data(data_type='train'):
         :param data_type: 数据的种类: 'train' or 'test' or 'valid (val)'
         :return:
     '''
-    if data_type == 'val': data_type = 'valid'
+    # print("load_data data_type:", data_type)
+    # load_data data_type: train
+    # load_data data_type: val
+    # load_data data_type: test
+
+    if data_type == 'val':
+        data_type = 'valid'
+
     save_path = dataset_dir + '/' + save_file[data_type]
+    # print("load_data save_path:", save_path)
+    # load_data save_path: /deep-learning-advanced/dataset/ptb.train.npy
+    # load_data save_path: /deep-learning-advanced/dataset/ptb.valid.npy
+    # load_data save_path: /deep-learning-advanced/dataset/ptb.test.npy
 
     word_to_id, id_to_word = load_vocab()
+    # print("load_data word_to_id:", word_to_id)
+    # print("load_data id_to_word:", id_to_word)
 
     if os.path.exists(save_path):
         corpus = np.load(save_path)
         return corpus, word_to_id, id_to_word
 
     file_name = key_file[data_type]
+    # print("load_data file_name:", file_name)
+    # load_data file_name: ptb.train.txt
+    # load_data file_name: ptb.valid.txt
+    # load_data file_name: ptb.test.txt
+
     file_path = dataset_dir + '/' + file_name
+    # print("load_data file_path:", file_path)
+    # load_data file_path: /deep-learning-advanced/dataset/ptb.train.txt
+    # load_data file_path: /deep-learning-advanced/dataset/ptb.valid.txt
+    # load_data file_path: /deep-learning-advanced/dataset/ptb.test.txt
+
     _download(file_name)
 
     words = open(file_path).read().replace('\n', '<eos>').strip().split()

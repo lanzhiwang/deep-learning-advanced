@@ -10,11 +10,19 @@ window_size = 2
 wordvec_size = 100
 
 corpus, word_to_id, id_to_word = ptb.load_data('train')
+print("corpus:", len(corpus))
+# corpus: 929589
+
 vocab_size = len(word_to_id)
 print('counting  co-occurrence ...')
 C = create_co_matrix(corpus, vocab_size, window_size)
+print("C:", C.shape)
+# C: (10000, 10000)
+
 print('calculating PPMI ...')
 W = ppmi(C, verbose=True)
+print("W:", W.shape)
+# W: (10000, 10000)
 
 print('calculating SVD ...')
 try:
@@ -27,6 +35,12 @@ try:
 except ImportError:
     # SVD (slow)
     U, S, V = np.linalg.svd(W)
+print("U:", U.shape)
+# U: (10000, 100)
+print("S:", S.shape)
+# S: (100,)
+print("V:", V.shape)
+# V: (100, 10000)
 
 word_vecs = U[:, :wordvec_size]
 
