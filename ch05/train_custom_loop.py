@@ -16,14 +16,14 @@ time_size = 5  # Truncated BPTT的时间跨度大小
 lr = 0.1
 max_epoch = 100
 
-# 读入训练数据(缩小了数据集)
+# 读入训练数据（缩小了数据集）
 corpus, word_to_id, id_to_word = ptb.load_data('train')
 corpus_size = 1000
 corpus = corpus[:corpus_size]
 vocab_size = int(max(corpus) + 1)
 
 xs = corpus[:-1]  # 输入
-ts = corpus[1:]  # 输出(监督标签)
+ts = corpus[1:]  # 输出（监督标签）
 data_size = len(xs)
 print('corpus size: %d, vocabulary size: %d' % (corpus_size, vocab_size))
 
@@ -53,7 +53,7 @@ for epoch in range(max_epoch):
                 batch_t[i, t] = ts[(offset + time_idx) % data_size]
             time_idx += 1
 
-        # 计算梯度, 更新参数
+        # 计算梯度，更新参数
         loss = model.forward(batch_x, batch_t)
         model.backward()
         optimizer.update(model.params, model.grads)

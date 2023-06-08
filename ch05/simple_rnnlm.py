@@ -10,8 +10,6 @@ class SimpleRnnlm:
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
-        # print("V, D, H:", V, D, H)
-        # V, D, H: 7 3 7
         rn = np.random.randn
 
         # 初始化权重
@@ -21,18 +19,6 @@ class SimpleRnnlm:
         rnn_b = np.zeros(H).astype('f')
         affine_W = (rn(H, V) / np.sqrt(H)).astype('f')
         affine_b = np.zeros(V).astype('f')
-        # print("embed_W:", embed_W.shape)
-        # print("rnn_Wx:", rnn_Wx.shape)
-        # print("rnn_Wh:", rnn_Wh.shape)
-        # print("rnn_b:", rnn_b.shape)
-        # print("affine_W:", affine_W.shape)
-        # print("affine_b:", affine_b.shape)
-        # embed_W: (7, 3)
-        # rnn_Wx: (3, 7)
-        # rnn_Wh: (7, 7)
-        # rnn_b: (7,)
-        # affine_W: (7, 7)
-        # affine_b: (7,)
 
         # 生成层
         self.layers = [
@@ -42,17 +28,6 @@ class SimpleRnnlm:
         ]
         self.loss_layer = TimeSoftmaxWithLoss()
         self.rnn_layer = self.layers[1]
-        # print("self.layers:", self.layers)
-        # print("self.loss_layer:", self.loss_layer)
-        # print("self.rnn_layer:", self.rnn_layer)
-        # self.layers:
-        # [
-        #     <common.time_layers.TimeEmbedding object at 0x7f6f75907f70>,
-        #     <common.time_layers.TimeRNN object at 0x7f6f34e9f7f0>,
-        #     <common.time_layers.TimeAffine object at 0x7f6f34e9e8c0>
-        # ]
-        # self.loss_layer: <common.time_layers.TimeSoftmaxWithLoss object at 0x7f6f34e9e830>
-        # self.rnn_layer: <common.time_layers.TimeRNN object at 0x7f6f34e9f7f0>
 
         # 将所有的权重和梯度整理到列表中
         self.params, self.grads = [], []

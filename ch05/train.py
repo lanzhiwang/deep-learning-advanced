@@ -21,7 +21,7 @@ corpus_size = 1000  # 缩小测试用的数据集
 corpus = corpus[:corpus_size]
 vocab_size = int(max(corpus) + 1)
 xs = corpus[:-1]  # 输入
-ts = corpus[1:]  # 输出(监督标签)
+ts = corpus[1:]  # 输出（监督标签）
 
 # 生成模型
 model = SimpleRnnlm(vocab_size, wordvec_size, hidden_size)
