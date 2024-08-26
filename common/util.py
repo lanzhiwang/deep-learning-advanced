@@ -7,6 +7,34 @@ from common.np import *
 
 
 def preprocess(text):
+    """
+    >>> text = 'You say goodbye and I say hello.'
+    >>> text = text.lower()
+    >>> text = text.replace('.', ' .')
+    >>> text
+    'you say goodbye and i say hello .'
+    >>> words = text.split(' ')
+    >>> words
+    ['you', 'say', 'goodbye', 'and', 'i', 'say', 'hello', '.']
+    >>> word_to_id = {}
+    >>> id_to_word = {}
+    >>>
+    >>> for word in words:
+    ...    if word not in word_to_id:
+    ...        new_id = len(word_to_id)
+    ...        word_to_id[word] = new_id
+    ...        id_to_word[new_id] = word
+    >>>
+    >>> id_to_word
+    {0: 'you', 1: 'say', 2: 'goodbye', 3: 'and', 4: 'i', 5: 'hello', 6:'.'}
+    >>> word_to_id
+    {'you': 0, 'say': 1, 'goodbye': 2, 'and': 3, 'i': 4, 'hello': 5, '.': 6}
+    >>> import numpy as np
+    >>> corpus = [word_to_id[w] for w in words]
+    >>> corpus = np.array(corpus)
+    >>> corpus
+    array([0, 1, 2, 3, 4, 1, 5, 6])
+    """
     text = text.lower()
     text = text.replace('.', ' .')
     words = text.split(' ')
@@ -29,7 +57,7 @@ def cos_similarity(x, y, eps=1e-8):
 
     :param x: 向量
     :param y: 向量
-    :param eps: 用于防止“除数为0”的微小值
+    :param eps: 用于防止"除数为 0"的微小值
     :return:
     '''
     nx = x / (np.sqrt(np.sum(x**2)) + eps)
@@ -41,8 +69,8 @@ def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
     '''相似单词的查找
 
     :param query: 查询词
-    :param word_to_id: 从单词到单词ID的字典
-    :param id_to_word: 从单词ID到单词的字典
+    :param word_to_id: 从单词到单词 ID 的字典
+    :param id_to_word: 从单词 ID 到单词的字典
     :param word_matrix: 汇总了单词向量的矩阵，假定保存了与各行对应的单词向量
     :param top: 显示到前几位
     '''
@@ -60,6 +88,14 @@ def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
     for i in range(vocab_size):
         similarity[i] = cos_similarity(word_matrix[i], query_vec)
 
+    """
+    argsort() 方法可以按升序对 NumPy 数组的元素进行排序(不过, 返回值是数组的索引)
+    >>> x = np.array([100, -20, 2])
+    >>> x.argsort()
+    array([1, 2, 0])
+    >>> (-x).argsort()
+    array([0, 2, 1])
+    """
     count = 0
     for i in (-1 * similarity).argsort():
         if id_to_word[i] == query:
@@ -98,9 +134,9 @@ def convert_one_hot(corpus, vocab_size):
 def create_co_matrix(corpus, vocab_size, window_size=1):
     '''生成共现矩阵
 
-    :param corpus: 语料库（单词ID列表）
-    :param vocab_size:词汇个数
-    :param window_size:窗口大小（当窗口大小为1时，左右各1个单词为上下文）
+    :param corpus: 语料库(单词 ID 列表)
+    :param vocab_size: 词汇个数
+    :param window_size: 窗口大小(当窗口大小为1时, 左右各 1 个单词为上下文)
     :return: 共现矩阵
     '''
     corpus_size = len(corpus)
