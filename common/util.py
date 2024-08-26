@@ -159,7 +159,7 @@ def create_co_matrix(corpus, vocab_size, window_size=1):
 
 
 def ppmi(C, verbose=False, eps=1e-8):
-    '''生成PPMI（正的点互信息）
+    '''生成PPMI(正的点互信息)
 
     :param C: 共现矩阵
     :param verbose: 是否输出进展情况
