@@ -27,6 +27,7 @@ dataset_dir = os.path.dirname(os.path.abspath(__file__))
 # print("dataset_dir:", dataset_dir)
 # dataset_dir: /workspaces/deep-learning-advanced/dataset
 
+
 def _download(file_name):
     # print("_download file_name:", file_name)
     # _download file_name: ptb.train.txt
@@ -80,12 +81,27 @@ def load_vocab():
     _download(file_name)
 
     words = open(file_path).read().replace('\n', '<eos>').strip().split()
+    # print("load_vocab words:", words)
+    """
+    ['aer', 'banknote', 'berlitz', 'calloway', 'centrust', 'cluett', 'fromstein', 'gitano', 'guterman', 'hydro-quebec', 'ipo', 'kia', 'memotec', 'mlx', 'nahb', 'punts', 'rake', 'regatta', 'rubens', 'sim', 'snack-food', 'ssangyong', 'swapo', 'wachter',
+     '<eos>',
+     'pierre', '<unk>', 'N', 'years', 'old', 'will', 'join', 'the', 'board', 'as', 'a', 'nonexecutive', 'director', 'nov.', 'N',
+     '<eos>',
+     'mr.', '<unk>', 'is', 'chairman', 'of', '<unk>', 'n.v.', 'the', 'dutch', 'publishing', 'group'
+    ]
+    """
 
     for i, word in enumerate(words):
         if word not in word_to_id:
             tmp_id = len(word_to_id)
             word_to_id[word] = tmp_id
             id_to_word[tmp_id] = word
+    # print("load_vocab word_to_id:", word_to_id)
+    # print("load_vocab id_to_word:", id_to_word)
+    """
+    {'aer': 0, 'banknote': 1, 'berlitz': 2, 'calloway': 3, 'centrust': 4, 'cluett': 5, 'fromstein': 6, 'gitano': 7, 'guterman': 8, 'hydro-quebec': 9, 'ipo': 10, 'kia': 11, 'memotec': 12, 'mlx': 13, 'nahb': 14, 'punts': 15, 'rake': 16, 'regatta': 17, 'rubens': 18, 'sim': 19, 'snack-food': 20, 'ssangyong': 21, 'swapo': 22, 'wachter': 23, '<eos>': 24, 'pierre': 25, '<unk>': 26, 'N': 27, 'years': 28, 'old': 29, 'will': 30, 'join': 31, 'the': 32, 'board': 33, 'as': 34, 'a': 35, 'nonexecutive': 36, 'director': 37, 'nov.': 38, 'mr.': 39, 'is': 40, 'chairman': 41, 'of': 42, 'n.v.': 43, 'dutch': 44, 'publishing': 45, 'group': 46, '<eos><eos><eos>': 47, "['aer',": 48, "'banknote',": 49, "'berlitz',": 50, "'calloway',": 51, "'centrust',": 52, "'cluett',": 53, "'fromstein',": 54, "'gitano',": 55, "'guterman',": 56, "'hydro-quebec',": 57, "'ipo',": 58, "'kia',": 59, "'memotec',": 60, "'mlx',": 61, "'nahb',": 62, "'punts',": 63, "'rake',": 64, "'regatta',": 65, "'rubens',": 66, "'sim',": 67, "'snack-food',": 68, "'ssangyong',": 69, "'swapo',": 70, "'wachter',": 71, "'<eos>',": 72, "'pierre',": 73, "'<unk>',": 74, "'N',": 75, "'years',": 76, "'old',": 77, "'will',": 78, "'join',": 79, "'the',": 80, "'board',": 81, "'as',": 82, "'a',": 83, "'nonexecutive',": 84, "'director',": 85, "'nov.',": 86, "'mr.',": 87, "'is',": 88, "'chairman',": 89, "'of',": 90, "'n.v.',": 91, "'dutch',": 92, "'publishing',": 93, "'group'<eos>]<eos><eos>": 94}
+    {0: 'aer', 1: 'banknote', 2: 'berlitz', 3: 'calloway', 4: 'centrust', 5: 'cluett', 6: 'fromstein', 7: 'gitano', 8: 'guterman', 9: 'hydro-quebec', 10: 'ipo', 11: 'kia', 12: 'memotec', 13: 'mlx', 14: 'nahb', 15: 'punts', 16: 'rake', 17: 'regatta', 18: 'rubens', 19: 'sim', 20: 'snack-food', 21: 'ssangyong', 22: 'swapo', 23: 'wachter', 24: '<eos>', 25: 'pierre', 26: '<unk>', 27: 'N', 28: 'years', 29: 'old', 30: 'will', 31: 'join', 32: 'the', 33: 'board', 34: 'as', 35: 'a', 36: 'nonexecutive', 37: 'director', 38: 'nov.', 39: 'mr.', 40: 'is', 41: 'chairman', 42: 'of', 43: 'n.v.', 44: 'dutch', 45: 'publishing', 46: 'group', 47: '<eos><eos><eos>', 48: "['aer',", 49: "'banknote',", 50: "'berlitz',", 51: "'calloway',", 52: "'centrust',", 53: "'cluett',", 54: "'fromstein',", 55: "'gitano',", 56: "'guterman',", 57: "'hydro-quebec',", 58: "'ipo',", 59: "'kia',", 60: "'memotec',", 61: "'mlx',", 62: "'nahb',", 63: "'punts',", 64: "'rake',", 65: "'regatta',", 66: "'rubens',", 67: "'sim',", 68: "'snack-food',", 69: "'ssangyong',", 70: "'swapo',", 71: "'wachter',", 72: "'<eos>',", 73: "'pierre',", 74: "'<unk>',", 75: "'N',", 76: "'years',", 77: "'old',", 78: "'will',", 79: "'join',", 80: "'the',", 81: "'board',", 82: "'as',", 83: "'a',", 84: "'nonexecutive',", 85: "'director',", 86: "'nov.',", 87: "'mr.',", 88: "'is',", 89: "'chairman',", 90: "'of',", 91: "'n.v.',", 92: "'dutch',", 93: "'publishing',", 94: "'group'<eos>]<eos><eos>"}
+    """
 
     with open(vocab_path, 'wb') as f:
         pickle.dump((word_to_id, id_to_word), f)
@@ -131,6 +147,12 @@ def load_data(data_type='train'):
 
     words = open(file_path).read().replace('\n', '<eos>').strip().split()
     corpus = np.array([word_to_id[w] for w in words])
+    # print("load_data corpus:", corpus)
+    """
+    [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+      24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 27 24 39 26 40 41 42 26 43
+      32 44 45 46]
+    """
 
     np.save(save_path, corpus)
     return corpus, word_to_id, id_to_word

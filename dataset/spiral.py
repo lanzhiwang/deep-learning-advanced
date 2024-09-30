@@ -9,10 +9,12 @@ def load_data(seed=1984):
     CLS_NUM = 3  # 类别数
 
     x = np.zeros((N * CLS_NUM, DIM))
-    t = np.zeros((N * CLS_NUM, CLS_NUM), dtype=np.int)
+    t = np.zeros((N * CLS_NUM, CLS_NUM), dtype=np.int32)
+    # print('x', x.shape)  # (300, 2)
+    # print('t', t.shape)  # (300, 3)
 
-    for j in range(CLS_NUM):
-        for i in range(N):  #N*j, N*(j+1)):
+    for j in range(CLS_NUM):  # 0 1 2
+        for i in range(N):  # 0 1 2 ... 99
             rate = i / N
             radius = 1.0 * rate
             theta = j * 4.0 + 4.0 * rate + np.random.randn() * 0.2
@@ -23,3 +25,9 @@ def load_data(seed=1984):
             t[ix, j] = 1
 
     return x, t
+
+
+if __name__ == '__main__':
+    x, t = load_data()
+    print('x', x.shape)  # (300, 2)
+    print('t', t.shape)  # (300, 3)

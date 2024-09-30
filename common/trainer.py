@@ -12,6 +12,9 @@ from common.util import clip_grads
 class Trainer:
 
     def __init__(self, model, optimizer):
+        """
+        trainer = Trainer(model, optimizer)
+        """
         self.model = model
         self.optimizer = optimizer
         self.loss_list = []
@@ -25,8 +28,11 @@ class Trainer:
             batch_size=32,
             max_grad=None,
             eval_interval=20):
-        data_size = len(x)
-        max_iters = data_size // batch_size
+        """
+        trainer.fit(x, t, max_epoch, batch_size, eval_interval=10)
+        """
+        data_size = len(x)  # 300
+        max_iters = data_size // batch_size  # 10
         self.eval_interval = eval_interval
         model, optimizer = self.model, self.optimizer
         total_loss = 0

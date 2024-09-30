@@ -87,7 +87,6 @@ def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
     similarity = np.zeros(vocab_size)
     for i in range(vocab_size):
         similarity[i] = cos_similarity(word_matrix[i], query_vec)
-
     """
     argsort() 方法可以按升序对 NumPy 数组的元素进行排序(不过, 返回值是数组的索引)
     >>> x = np.array([100, -20, 2])
