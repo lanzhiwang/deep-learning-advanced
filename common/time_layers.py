@@ -1,4 +1,9 @@
 # coding: utf-8
+import sys
+
+sys.path.append('..')
+import numpy as np
+
 from common.np import *  # import numpy as np (or import cupy as np)
 from common.layers import *
 from common.functions import softmax, sigmoid
@@ -12,11 +17,14 @@ class RNN:
         self.cache = None
 
     def forward(self, x, h_prev):
+        # print("RNN x:", x.shape)  # RNN x: (5, 5)
+        # print("RNN h_prev:", h_prev.shape)  # RNN h_prev: (5, 5)
         Wx, Wh, b = self.params
         t = np.dot(h_prev, Wh) + np.dot(x, Wx) + b
         h_next = np.tanh(t)
 
         self.cache = (x, h_prev, h_next)
+        # print("RNN h_next:", h_next.shape)
         return h_next
 
     def backward(self, dh_next):
@@ -48,20 +56,27 @@ class TimeRNN:
         self.stateful = stateful
 
     def forward(self, xs):
+        # print("TimeRNN xs:", xs.shape)  # TimeRNN xs: (10, 50, 100)
         Wx, Wh, b = self.params
-        N, T, D = xs.shape
-        D, H = Wx.shape
+        N, T, D = xs.shape  # (10, 50, 100)
+        # print(N, T, D)
+        D, H = Wx.shape  # (100, 100)
+        # print(D, H)
 
         self.layers = []
-        hs = np.empty((N, T, H), dtype='f')
+        hs = np.empty((N, T, H), dtype='f')  # (10, 50, 100)
+        # print("TimeRNN hs:", hs.shape)
 
         if not self.stateful or self.h is None:
-            self.h = np.zeros((N, H), dtype='f')
+            self.h = np.zeros((N, H), dtype='f')  # (10, 100)
+            # print("TimeRNN self.h:", self.h.shape)
 
         for t in range(T):
+            # print("##" * 20, "t = ", t)
             layer = RNN(*self.params)
             self.h = layer.forward(xs[:, t, :], self.h)
             hs[:, t, :] = self.h
+            # print("TimeRNN hs:", hs)
             self.layers.append(layer)
 
         return hs
@@ -238,16 +253,21 @@ class TimeEmbedding:
         self.W = W
 
     def forward(self, xs):
-        N, T = xs.shape
-        V, D = self.W.shape
+        # print("TimeEmbedding xs:", xs.shape)  # TimeEmbedding xs: (10, 50)
+        N, T = xs.shape  # (10, 50)
+        V, D = self.W.shape  # (1002, 100)
+        # print(N, T, V, D)  # 10 50 1002 100
 
-        out = np.empty((N, T, D), dtype='f')
+        out = np.empty((N, T, D), dtype='f')  # (10, 50, 100)
+        # print("TimeEmbedding out:", out.shape)  # TimeEmbedding out: (10, 50, 100)
         self.layers = []
 
         for t in range(T):
+            # print("##" * 20, "t = ", t)
             layer = Embedding(self.W)
             out[:, t, :] = layer.forward(xs[:, t])
             self.layers.append(layer)
+            # print("TimeEmbedding out:", out)
 
         return out
 
@@ -272,11 +292,13 @@ class TimeAffine:
         self.x = None
 
     def forward(self, x):
-        N, T, D = x.shape
+        # print("TimeAffine x:", x.shape)  # TimeAffine x: (10, 50, 100)
+        N, T, D = x.shape  # (10, 50, 100)
         W, b = self.params
 
         rx = x.reshape(N * T, -1)
-        out = np.dot(rx, W) + b
+        # print("TimeAffine rx:", rx.shape)  # TimeAffine rx: (500, 100)
+        out = np.dot(rx, W) + b  # (500, 100) * (100, 1002) = (500, 1002)
         self.x = x
         return out.reshape(N, T, -1)
 
@@ -641,3 +663,197 @@ class Simple_TimeAffine:
             self.db += layer.db
 
         return dxs
+
+
+if __name__ == '__main__':
+    embed_W = np.arange(125).reshape(25, 5)
+    # print("embed_W:", embed_W)
+    te = TimeEmbedding(embed_W)
+    xs = np.arange(25).reshape(5, 5)
+    # print("xs:", xs)
+    # print("xs[:, 0]:", xs[:, 0])
+    # print("xs[:, 1]:", xs[:, 1])
+    # print("xs[:, 2]:", xs[:, 2])
+    # print("xs[:, 3]:", xs[:, 3])
+    # print("xs[:, 4]:", xs[:, 4])
+    # print("xs[:, 4]:", xs[:, 4].shape)  # xs[:, 4]: (5,)
+    xs = te.forward(xs)
+    # print("xs:", xs)
+    # print("xs:", xs.shape)  # xs: (5, 5, 5)
+
+    # embed_W: [[  0   1   2   3   4]
+    #  [  5   6   7   8   9]
+    #  [ 10  11  12  13  14]
+    #  [ 15  16  17  18  19]
+    #  [ 20  21  22  23  24]
+    #  [ 25  26  27  28  29]
+    #  [ 30  31  32  33  34]
+    #  [ 35  36  37  38  39]
+    #  [ 40  41  42  43  44]
+    #  [ 45  46  47  48  49]
+    #  [ 50  51  52  53  54]
+    #  [ 55  56  57  58  59]
+    #  [ 60  61  62  63  64]
+    #  [ 65  66  67  68  69]
+    #  [ 70  71  72  73  74]
+    #  [ 75  76  77  78  79]
+    #  [ 80  81  82  83  84]
+    #  [ 85  86  87  88  89]
+    #  [ 90  91  92  93  94]
+    #  [ 95  96  97  98  99]
+    #  [100 101 102 103 104]
+    #  [105 106 107 108 109]
+    #  [110 111 112 113 114]
+    #  [115 116 117 118 119]
+    #  [120 121 122 123 124]]
+    # xs: [[ 0  1  2  3  4]
+    #  [ 5  6  7  8  9]
+    #  [10 11 12 13 14]
+    #  [15 16 17 18 19]
+    #  [20 21 22 23 24]]
+    # xs[:, 0]: [ 0  5 10 15 20]
+    # xs[:, 1]: [ 1  6 11 16 21]
+    # xs[:, 2]: [ 2  7 12 17 22]
+    # xs[:, 3]: [ 3  8 13 18 23]
+    # xs[:, 4]: [ 4  9 14 19 24]
+    # xs[:, 4]: (5,)
+    # xs: [[[  0.   1.   2.   3.   4.]
+    #   [  5.   6.   7.   8.   9.]
+    #   [ 10.  11.  12.  13.  14.]
+    #   [ 15.  16.  17.  18.  19.]
+    #   [ 20.  21.  22.  23.  24.]]
+
+    #  [[ 25.  26.  27.  28.  29.]
+    #   [ 30.  31.  32.  33.  34.]
+    #   [ 35.  36.  37.  38.  39.]
+    #   [ 40.  41.  42.  43.  44.]
+    #   [ 45.  46.  47.  48.  49.]]
+
+    #  [[ 50.  51.  52.  53.  54.]
+    #   [ 55.  56.  57.  58.  59.]
+    #   [ 60.  61.  62.  63.  64.]
+    #   [ 65.  66.  67.  68.  69.]
+    #   [ 70.  71.  72.  73.  74.]]
+
+    #  [[ 75.  76.  77.  78.  79.]
+    #   [ 80.  81.  82.  83.  84.]
+    #   [ 85.  86.  87.  88.  89.]
+    #   [ 90.  91.  92.  93.  94.]
+    #   [ 95.  96.  97.  98.  99.]]
+
+    #  [[100. 101. 102. 103. 104.]
+    #   [105. 106. 107. 108. 109.]
+    #   [110. 111. 112. 113. 114.]
+    #   [115. 116. 117. 118. 119.]
+    #   [120. 121. 122. 123. 124.]]]
+    # xs: (5, 5, 5)
+
+    print("******" * 20)
+
+    ##########################################################################
+
+    rnn_Wx = np.arange(25).reshape(5, 5)
+    # print("rnn_Wx:", rnn_Wx)
+
+    rnn_Wh = np.arange(25).reshape(5, 5)
+    # print("rnn_Wh:", rnn_Wh)
+
+    rnn_b = np.zeros(5)
+    # print("rnn_b:", rnn_b)
+
+    tn = TimeRNN(rnn_Wx, rnn_Wh, rnn_b, stateful=True)
+    xs = np.arange(125).reshape(5, 5, 5)
+    # print("xs:", xs)
+    # print("xs[:, 0, :]", xs[:, 0, :])
+    # print("xs[:, 1, :]", xs[:, 1, :])
+    # print("xs[:, 2, :]", xs[:, 2, :])
+    # print("xs[:, 3, :]", xs[:, 3, :])
+    # print("xs[:, 4, :]", xs[:, 4, :])
+    # print("xs[:, 4, :]", xs[:, 4, :].shape)  # (5, 5)
+    xs = tn.forward(xs)
+    # print("xs:", xs)
+    # print("xs:", xs.shape)
+
+    # rnn_Wx: [[ 0  1  2  3  4]
+    #  [ 5  6  7  8  9]
+    #  [10 11 12 13 14]
+    #  [15 16 17 18 19]
+    #  [20 21 22 23 24]]
+    # rnn_Wh: [[ 0  1  2  3  4]
+    #  [ 5  6  7  8  9]
+    #  [10 11 12 13 14]
+    #  [15 16 17 18 19]
+    #  [20 21 22 23 24]]
+    # rnn_b: [0. 0. 0. 0. 0.]
+    # xs: [[[  0   1   2   3   4]
+    #   [  5   6   7   8   9]
+    #   [ 10  11  12  13  14]
+    #   [ 15  16  17  18  19]
+    #   [ 20  21  22  23  24]]
+
+    #  [[ 25  26  27  28  29]
+    #   [ 30  31  32  33  34]
+    #   [ 35  36  37  38  39]
+    #   [ 40  41  42  43  44]
+    #   [ 45  46  47  48  49]]
+
+    #  [[ 50  51  52  53  54]
+    #   [ 55  56  57  58  59]
+    #   [ 60  61  62  63  64]
+    #   [ 65  66  67  68  69]
+    #   [ 70  71  72  73  74]]
+
+    #  [[ 75  76  77  78  79]
+    #   [ 80  81  82  83  84]
+    #   [ 85  86  87  88  89]
+    #   [ 90  91  92  93  94]
+    #   [ 95  96  97  98  99]]
+
+    #  [[100 101 102 103 104]
+    #   [105 106 107 108 109]
+    #   [110 111 112 113 114]
+    #   [115 116 117 118 119]
+    #   [120 121 122 123 124]]]
+    # xs[:, 0, :] [[  0   1   2   3   4]
+    #  [ 25  26  27  28  29]
+    #  [ 50  51  52  53  54]
+    #  [ 75  76  77  78  79]
+    #  [100 101 102 103 104]]
+    # xs[:, 1, :] [[  5   6   7   8   9]
+    #  [ 30  31  32  33  34]
+    #  [ 55  56  57  58  59]
+    #  [ 80  81  82  83  84]
+    #  [105 106 107 108 109]]
+    # xs[:, 2, :] [[ 10  11  12  13  14]
+    #  [ 35  36  37  38  39]
+    #  [ 60  61  62  63  64]
+    #  [ 85  86  87  88  89]
+    #  [110 111 112 113 114]]
+    # xs[:, 3, :] [[ 15  16  17  18  19]
+    #  [ 40  41  42  43  44]
+    #  [ 65  66  67  68  69]
+    #  [ 90  91  92  93  94]
+    #  [115 116 117 118 119]]
+    # xs[:, 4, :] [[ 20  21  22  23  24]
+    #  [ 45  46  47  48  49]
+    #  [ 70  71  72  73  74]
+    #  [ 95  96  97  98  99]
+    #  [120 121 122 123 124]]
+    # xs[:, 4, :] (5, 5)
+
+    print("******" * 20)
+
+    ##########################################################################
+    affine_W = np.arange(100200).reshape(100, 1002)
+    # print("affine_W:", affine_W.shape)  # affine_W: (100, 1002)
+
+    affine_b = np.zeros(1002)
+    # print("affine_b:", affine_b.shape)  # affine_b: (1002,)
+
+    ta = TimeAffine(affine_W, affine_b)
+
+    xs = np.arange(50000).reshape(10, 50, 100)
+    # print("xs:", xs.shape)  # xs: (10, 50, 100)
+
+    xs = ta.forward(xs)
+    # print("xs:", xs.shape)  # xs: (10, 50, 1002)

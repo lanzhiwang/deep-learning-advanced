@@ -107,11 +107,21 @@ def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
 
 
 def convert_one_hot(corpus, vocab_size):
-    '''转换为one-hot表示
+    '''转换为 one-hot 表示
 
-    :param corpus: 单词ID列表（一维或二维的NumPy数组）
+    import sys
+    sys.path.append('..')
+    from common.util import preprocess, create_contexts_target, convert_one_hot
+    text = 'You say goodbye and I say hello.'
+    corpus, word_to_id, id_to_word = preprocess(text)
+    contexts, target = create_contexts_target(corpus, window_size=1)
+    vocab_size = len(word_to_id)
+    target = convert_one_hot(target, vocab_size)
+    contexts = convert_one_hot(contexts, vocab_size)
+
+    :param corpus: 单词 ID 列表(一维或二维的 NumPy 数组)
     :param vocab_size: 词汇个数
-    :return: one-hot表示（二维或三维的NumPy数组）
+    :return: one-hot表示(二维或三维的 NumPy 数组)
     '''
     N = corpus.shape[0]
 
@@ -159,6 +169,7 @@ def create_co_matrix(corpus, vocab_size, window_size=1):
 
 def ppmi(C, verbose=False, eps=1e-8):
     '''生成PPMI(正的点互信息)
+    将共现矩阵转化为 PPMI 矩阵的函数
 
     :param C: 共现矩阵
     :param verbose: 是否输出进展情况
@@ -185,8 +196,18 @@ def ppmi(C, verbose=False, eps=1e-8):
 def create_contexts_target(corpus, window_size=1):
     '''生成上下文和目标词
 
-    :param corpus: 语料库（单词ID列表）
-    :param window_size: 窗口大小（当窗口大小为1时，左右各1个单词为上下文）
+    import sys
+    sys.path.append('..')
+    from common.util import preprocess
+    text = 'You say goodbye and I say hello.'
+    corpus, word_to_id, id_to_word = preprocess(text)
+    print(corpus)
+    # [0 1 2 3 4 1 5 6]
+
+    contexts, target = create_contexts_target(corpus, window_size=1)
+
+    :param corpus: 语料库(单词ID列表)
+    :param window_size: 窗口大小(当窗口大小为 1 时, 左右各 1 个单词为上下文)
     :return:
     '''
     target = corpus[window_size:-window_size]

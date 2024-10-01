@@ -9,11 +9,15 @@ from common.layers import MatMul, SoftmaxWithLoss
 class SimpleCBOW:
 
     def __init__(self, vocab_size, hidden_size):
+        """
+        model = SimpleCBOW(7, 5)
+        """
         V, H = vocab_size, hidden_size
 
         # 初始化权重
-        W_in = 0.01 * np.random.randn(V, H).astype('f')
-        W_out = 0.01 * np.random.randn(H, V).astype('f')
+        # 初始化将使用 32 位的浮点数
+        W_in = 0.01 * np.random.randn(V, H).astype('f')  # (7, 5)
+        W_out = 0.01 * np.random.randn(H, V).astype('f')  # (5, 7)
 
         # 生成层
         self.in_layer0 = MatMul(W_in)

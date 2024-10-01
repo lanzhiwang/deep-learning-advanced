@@ -159,14 +159,17 @@ class Dropout:
 class Embedding:
 
     def __init__(self, W):
+        # print("Embedding W:", W.shape)  # Embedding W: (25, 5)
         self.params = [W]
         self.grads = [np.zeros_like(W)]
         self.idx = None
 
     def forward(self, idx):
+        # print("Embedding idx:", idx.shape)  # Embedding idx: (5,)
         W, = self.params
         self.idx = idx
-        out = W[idx]
+        out = W[idx]  # W[ 0  5 10 15 20]
+        # print("Embedding out:", out)
         return out
 
     def backward(self, dout):
