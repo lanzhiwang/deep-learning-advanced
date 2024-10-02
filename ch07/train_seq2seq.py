@@ -13,6 +13,11 @@ from peeky_seq2seq import PeekySeq2seq
 
 # 读入数据集
 (x_train, t_train), (x_test, t_test) = sequence.load_data('addition.txt')
+# print("x_train:", x_train.shape)  # x_train: (45000, 7)
+# print("t_train:", t_train.shape)  # t_train: (45000, 5)
+# print("x_test:", x_test.shape)  # x_test: (5000, 7)
+# print("t_test:", t_test.shape)  # t_test: (5000, 5)
+
 char_to_id, id_to_char = sequence.get_vocab()
 
 # Reverse input? =================================================
@@ -23,6 +28,8 @@ if is_reverse:
 
 # 设定超参数
 vocab_size = len(char_to_id)
+# print("vocab_size:", vocab_size)  # vocab_size: 13
+
 wordvec_size = 16
 hidden_size = 128
 batch_size = 128

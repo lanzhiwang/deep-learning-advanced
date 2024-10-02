@@ -10,6 +10,7 @@ class Encoder:
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
+        # print("Encoder __init__ V, D, H:", V, D, H)  # Encoder __init__ V, D, H: 13 16 128
         rn = np.random.randn
 
         embed_W = (rn(V, D) / 100).astype('f')
@@ -43,6 +44,7 @@ class Decoder:
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
+        # print("Decoder __init__ V, D, H:", V, D, H)  # Decoder __init__ V, D, H: 13 16 128
         rn = np.random.randn
 
         embed_W = (rn(V, D) / 100).astype('f')
@@ -97,6 +99,7 @@ class Seq2seq(BaseModel):
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
         V, D, H = vocab_size, wordvec_size, hidden_size
+        # print("Seq2seq __init__ V, D, H:", V, D, H)  # Seq2seq __init__ V, D, H: 13 16 128
         self.encoder = Encoder(V, D, H)
         self.decoder = Decoder(V, D, H)
         self.softmax = TimeSoftmaxWithLoss()
@@ -105,7 +108,12 @@ class Seq2seq(BaseModel):
         self.grads = self.encoder.grads + self.decoder.grads
 
     def forward(self, xs, ts):
+        # print("Seq2seq forward xs:", xs.shape)  # Seq2seq forward xs: (128, 7)
+        # print("Seq2seq forward ts:", ts.shape)  # Seq2seq forward ts: (128, 5)
+
         decoder_xs, decoder_ts = ts[:, :-1], ts[:, 1:]
+        # print("Seq2seq forward decoder_xs:", decoder_xs.shape)  # Seq2seq forward decoder_xs: (128, 4)
+        # print("Seq2seq forward decoder_ts:", decoder_ts.shape)  # Seq2seq forward decoder_ts: (128, 4)
 
         h = self.encoder.forward(xs)
         score = self.decoder.forward(decoder_xs, h)

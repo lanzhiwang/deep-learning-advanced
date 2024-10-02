@@ -7,8 +7,13 @@ from rnnlm_gen import BetterRnnlmGen
 from dataset import ptb
 
 corpus, word_to_id, id_to_word = ptb.load_data('train')
+# print("corpus[:10]:", corpus[:10])  # corpus[:10]: [0 1 2 3 4 5 6 7 8 9]
+
 vocab_size = len(word_to_id)
+# print("vocab_size:", vocab_size)  # vocab_size: 10000
+
 corpus_size = len(corpus)
+# print("corpus_size:", corpus_size)  # corpus_size: 929589
 
 model = BetterRnnlmGen()
 model.load_params('../ch06/BetterRnnlm.pkl')
