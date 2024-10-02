@@ -23,6 +23,14 @@ class AttentionEncoder(Encoder):
 class AttentionDecoder:
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
+        """
+        vocab_size = len(char_to_id)
+        print("vocab_size:", vocab_size)  # vocab_size: 59
+
+        wordvec_size = 16
+
+        hidden_size = 256
+        """
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
 
@@ -95,6 +103,16 @@ class AttentionDecoder:
 class AttentionSeq2seq(Seq2seq):
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
+        """
+        vocab_size = len(char_to_id)
+        print("vocab_size:", vocab_size)  # vocab_size: 59
+
+        wordvec_size = 16
+
+        hidden_size = 256
+
+        model = AttentionSeq2seq(vocab_size, wordvec_size, hidden_size)
+        """
         args = vocab_size, wordvec_size, hidden_size
         self.encoder = AttentionEncoder(*args)
         self.decoder = AttentionDecoder(*args)

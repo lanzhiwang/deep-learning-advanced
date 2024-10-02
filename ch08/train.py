@@ -9,18 +9,27 @@ from common.optimizer import Adam
 from common.trainer import Trainer
 from common.util import eval_seq2seq
 from attention_seq2seq import AttentionSeq2seq
-from ch07.seq2seq import Seq2seq
-from ch07.peeky_seq2seq import PeekySeq2seq
+# from ch07.seq2seq import Seq2seq
+# from ch07.peeky_seq2seq import PeekySeq2seq
 
 # 读入数据
 (x_train, t_train), (x_test, t_test) = sequence.load_data('date.txt')
+# print("x_train:", x_train.shape)  # x_train: (45000, 29)
+# print("t_train:", t_train.shape)  # t_train: (45000, 11)
+# print("x_test:", x_test.shape)  # x_test: (5000, 29)
+# print("t_test:", t_test.shape)  # t_test: (5000, 11)
+
 char_to_id, id_to_char = sequence.get_vocab()
 
 # 反转输入语句
 x_train, x_test = x_train[:, ::-1], x_test[:, ::-1]
+# print("x_train:", x_train.shape)  # x_train: (45000, 29)
+# print("x_test:", x_test.shape)  # x_test: (5000, 29)
 
 # 设定超参数
 vocab_size = len(char_to_id)
+# print("vocab_size:", vocab_size)  # vocab_size: 59
+
 wordvec_size = 16
 hidden_size = 256
 batch_size = 128
