@@ -8,6 +8,11 @@ max_norm = 5.0
 
 
 def clip_grads(grads, max_norm):
+    """
+    实现梯度裁剪，将其实现为 clip_grads(grads, max_norm) 函数
+    参数 grads 是梯度的列表
+    max_norm 是阈值
+    """
     total_norm = 0
     for grad in grads:
         total_norm += np.sum(grad**2)

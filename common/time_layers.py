@@ -56,6 +56,14 @@ class TimeRNN:
         self.stateful = stateful
 
     def forward(self, xs):
+        """
+        批大小是 N
+        输入向量的维数是 D
+        隐藏状态向量的维数是 H
+
+        Truncated BPTT 的时间跨度大小是 T
+        Time RNN 层由 T 个 RNN 层构成(T 可以设置为任意值)
+        """
         # print("TimeRNN xs:", xs.shape)  # TimeRNN xs: (10, 50, 100)
         Wx, Wh, b = self.params
         N, T, D = xs.shape  # (10, 50, 100)
@@ -114,12 +122,15 @@ class LSTM:
 
     def __init__(self, Wx, Wh, b):
         '''
-
         Parameters
         ----------
-        Wx: 输入`x`用的权重参数（整合了4个权重）
-        Wh: 隐藏状态`h`用的权重参数（整合了4个权重）
-        b: 偏置（整合了4个偏置）
+        Wx: 输入 `x` 用的权重参数(整合了 4 个权重)
+        Wh: 隐藏状态 `h` 用的权重参数(整合了 4 个权重)
+        b: 偏置(整合了 4 个偏置)
+
+        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')  # Rnnlm predict lstm_Wx: (100, 400)
+        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')  # Rnnlm predict lstm_Wh: (100, 400)
+        lstm_b = np.zeros(4 * H).astype('f')  # Rnnlm predict lstm_b: (400,)
         '''
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -127,19 +138,32 @@ class LSTM:
 
     def forward(self, x, h_prev, c_prev):
         Wx, Wh, b = self.params
+        """
+        批大小是 N
+        输入数据的维数是 D
+        记忆单元和隐藏状态的维数都是 H
+        """
+        # print("LSTM forward x:", x.shape)  # LSTM forward x: (20, 100)
+        # print("LSTM forward h_prev:", h_prev.shape)  # LSTM forward h_prev: (20, 100)
+        # print("LSTM forward c_prev:", c_prev.shape)  # LSTM forward c_prev: (20, 100)
         N, H = h_prev.shape
 
+        # (20, 100) * (100, 400) + (20, 100) * (100, 400) + ((400,))
         A = np.dot(x, Wx) + np.dot(h_prev, Wh) + b
 
         f = A[:, :H]
+        # print("LSTM forward f:", f.shape)  # LSTM forward f: (20, 100)
         g = A[:, H:2 * H]
+        # print("LSTM forward g:", g.shape)  # LSTM forward g: (20, 100)
         i = A[:, 2 * H:3 * H]
+        # print("LSTM forward i:", i.shape)  # LSTM forward i: (20, 100)
         o = A[:, 3 * H:]
+        # print("LSTM forward o:", o.shape)  # LSTM forward o: (20, 100)
 
-        f = sigmoid(f)
+        f = sigmoid(f)  # 遗忘门
         g = np.tanh(g)
-        i = sigmoid(i)
-        o = sigmoid(o)
+        i = sigmoid(i)  # 输入门
+        o = sigmoid(o)  # 输出门
 
         c_next = f * c_prev + g * i
         h_next = o * np.tanh(c_next)
@@ -186,6 +210,12 @@ class LSTM:
 class TimeLSTM:
 
     def __init__(self, Wx, Wh, b, stateful=False):
+        """
+        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')  # Rnnlm predict lstm_Wx: (100, 400)
+        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')  # Rnnlm predict lstm_Wh: (100, 400)
+        lstm_b = np.zeros(4 * H).astype('f')  # Rnnlm predict lstm_b: (400,)
+        TimeLSTM(lstm_Wx, lstm_Wh, lstm_b, stateful=True),
+        """
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
         self.layers = None
@@ -195,9 +225,11 @@ class TimeLSTM:
         self.stateful = stateful
 
     def forward(self, xs):
+        # print("TimeLSTM forward xs:", xs.shape)  # TimeLSTM forward xs: (20, 35, 100)
         Wx, Wh, b = self.params
         N, T, D = xs.shape
         H = Wh.shape[0]
+        # print(N, T, D, H)  # 20 35 100 100
 
         self.layers = []
         hs = np.empty((N, T, H), dtype='f')

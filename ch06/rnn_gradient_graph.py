@@ -7,15 +7,18 @@ H = 3  # 隐藏状态向量的维数
 T = 20  # 时序数据的长度
 
 dh = np.ones((N, H))
+print("dh:", dh)
 
 np.random.seed(3)
 
 Wh = np.random.randn(H, H)
-#Wh = np.random.randn(H, H) * 0.5
+Wh = np.random.randn(H, H) * 0.5
+print("Wh:", Wh)
 
 norm_list = []
 for t in range(T):
     dh = np.dot(dh, Wh.T)
+    print("for dh:", dh)
     norm = np.sqrt(np.sum(dh**2)) / N
     norm_list.append(norm)
 
@@ -27,3 +30,4 @@ plt.xticks([0, 4, 9, 14, 19], [1, 5, 10, 15, 20])
 plt.xlabel('time step')
 plt.ylabel('norm')
 plt.show()
+plt.savefig('rnn_gradient_graph_02.png')
