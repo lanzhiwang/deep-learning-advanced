@@ -182,16 +182,20 @@ class WeightSum:
         self.cache = None
 
     def forward(self, hs, a):
-        """
-        N: 批次大小
-        T:
-        H:
-        """
+        # print("WeightSum hs:", hs.shape)  # WeightSum hs: (128, 29, 256)
+        # print("WeightSum a:", a.shape)  # WeightSum a: (128, 29)
+
         N, T, H = hs.shape
+        # print("WeightSum N, T, H:", N, T, H)  # WeightSum N, T, H: 128 29 256
 
         ar = a.reshape(N, T, 1).repeat(H, axis=2)
+        # print("WeightSum ar:", ar.shape)  # WeightSum ar: (128, 29, 256)
+
         t = hs * ar
+        # print("WeightSum t:", t.shape)  # WeightSum t: (128, 29, 256)
+
         c = np.sum(t, axis=1)
+        # print("WeightSum c:", c.shape)  # WeightSum c: (128, 256)
 
         self.cache = (hs, ar)
         return c
@@ -257,12 +261,23 @@ class AttentionWeight:
         self.cache = None
 
     def forward(self, hs, h):
+        # print("AttentionWeight hs:", hs.shape)  # Attention hs: (128, 29, 256)
+        # print("AttentionWeight h:", h.shape)  # Attention h: (128, 256)
+
         N, T, H = hs.shape
+        # print("AttentionWeight N, T, H:", N, T, H)  # AttentionWeight N, T, H: 128 29 256
 
         hr = h.reshape(N, 1, H).repeat(T, axis=1)
+        # print("AttentionWeight hr:", hr.shape)  # AttentionWeight hr: (128, 29, 256)
+
         t = hs * hr
+        # print("AttentionWeight t:", t.shape)  # AttentionWeight t: (128, 29, 256)
+
         s = np.sum(t, axis=2)
+        # print("AttentionWeight s:", s.shape)  # AttentionWeight s: (128, 29)
+
         a = self.softmax.forward(s)
+        # print("AttentionWeight a:", a.shape)  # AttentionWeight a: (128, 29)
 
         self.cache = (hs, hr)
         return a
@@ -289,8 +304,15 @@ class Attention:
         self.attention_weight = None
 
     def forward(self, hs, h):
+        # print("Attention hs:", hs.shape)  # Attention hs: (128, 29, 256)
+        # print("Attention h:", h.shape)  # Attention h: (128, 256)
+
         a = self.attention_weight_layer.forward(hs, h)
+        # print("Attention a:", a.shape)  # Attention a: (128, 29)
+
         out = self.weight_sum_layer.forward(hs, a)
+        # print("Attention out:", out.shape)  # Attention out: (128, 256)
+
         self.attention_weight = a
         return out
 
@@ -309,13 +331,22 @@ class TimeAttention:
         self.attention_weights = None
 
     def forward(self, hs_enc, hs_dec):
+        """
+        hs_enc 编码器的输出
+        hs_dec 解码器 lstm 层输出
+        """
+        # print("TimeAttention hs_enc:", hs_enc.shape)  # TimeAttention hs_enc: (128, 29, 256)
+        # print("TimeAttention hs_dec:", hs_dec.shape)  # TimeAttention hs_dec: (128, 10, 256)
+
         N, T, H = hs_dec.shape
         out = np.empty_like(hs_dec)
+        # print("TimeAttention out:", out.shape)  # TimeAttention out: (128, 10, 256)
         self.layers = []
         self.attention_weights = []
 
         for t in range(T):
             layer = Attention()
+            # print("TimeAttention hs_dec[:, t, :]:", hs_dec[:, t, :].shape)  # TimeAttention hs_dec[:, t, :]: (128, 256)
             out[:, t, :] = layer.forward(hs_enc, hs_dec[:, t, :])
             self.layers.append(layer)
             self.attention_weights.append(layer.attention_weight)

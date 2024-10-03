@@ -128,9 +128,14 @@ class LSTM:
         Wh: 隐藏状态 `h` 用的权重参数(整合了 4 个权重)
         b: 偏置(整合了 4 个偏置)
 
-        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')  # Rnnlm predict lstm_Wx: (100, 400)
-        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')  # Rnnlm predict lstm_Wh: (100, 400)
-        lstm_b = np.zeros(4 * H).astype('f')  # Rnnlm predict lstm_b: (400,)
+        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')
+        # print("Encoder __init__ lstm_Wx:", lstm_Wx.shape)  # Encoder __init__ lstm_Wx: (16, 1024)
+
+        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')
+        # print("Encoder __init__ lstm_Wh:", lstm_Wh.shape)  # Encoder __init__ lstm_Wh: (256, 1024)
+
+        lstm_b = np.zeros(4 * H).astype('f')
+        # print("Encoder __init__ lstm_b:", lstm_b.shape)  # Encoder __init__ lstm_b: (1024,)
         '''
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -143,29 +148,31 @@ class LSTM:
         输入数据的维数是 D
         记忆单元和隐藏状态的维数都是 H
         """
-        # print("LSTM forward x:", x.shape)  # LSTM forward x: (20, 100)
-        # print("LSTM forward h_prev:", h_prev.shape)  # LSTM forward h_prev: (20, 100)
-        # print("LSTM forward c_prev:", c_prev.shape)  # LSTM forward c_prev: (20, 100)
+        # print("LSTM forward x:", x.shape)  # LSTM forward x: (128, 16)
+        # print("LSTM forward h_prev:", h_prev.shape)  # LSTM forward h_prev: (128, 256)
+        # print("LSTM forward c_prev:", c_prev.shape)  # LSTM forward c_prev: (128, 256)
         N, H = h_prev.shape
 
-        # (20, 100) * (100, 400) + (20, 100) * (100, 400) + ((400,))
+        # (128, 16) * (16, 1024) + (128, 256) * (256, 1024) + (1024,)  # (128, 1024)
         A = np.dot(x, Wx) + np.dot(h_prev, Wh) + b
 
         f = A[:, :H]
-        # print("LSTM forward f:", f.shape)  # LSTM forward f: (20, 100)
+        # print("LSTM forward f:", f.shape)  # LSTM forward f: (128, 256)
         g = A[:, H:2 * H]
-        # print("LSTM forward g:", g.shape)  # LSTM forward g: (20, 100)
+        # print("LSTM forward g:", g.shape)  # LSTM forward g: (128, 256)
         i = A[:, 2 * H:3 * H]
-        # print("LSTM forward i:", i.shape)  # LSTM forward i: (20, 100)
+        # print("LSTM forward i:", i.shape)  # LSTM forward i: (128, 256)
         o = A[:, 3 * H:]
-        # print("LSTM forward o:", o.shape)  # LSTM forward o: (20, 100)
+        # print("LSTM forward o:", o.shape)  # LSTM forward o: (128, 256)
 
         f = sigmoid(f)  # 遗忘门
         g = np.tanh(g)
         i = sigmoid(i)  # 输入门
         o = sigmoid(o)  # 输出门
 
+        # (128, 256) * (128, 256) + (128, 256) * (128, 256) = (128, 256)
         c_next = f * c_prev + g * i
+        # (128, 256) * (128, 256) = (128, 256)
         h_next = o * np.tanh(c_next)
 
         self.cache = (x, h_prev, c_prev, i, f, g, o, c_next)
@@ -211,10 +218,17 @@ class TimeLSTM:
 
     def __init__(self, Wx, Wh, b, stateful=False):
         """
-        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')  # Rnnlm predict lstm_Wx: (100, 400)
-        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')  # Rnnlm predict lstm_Wh: (100, 400)
-        lstm_b = np.zeros(4 * H).astype('f')  # Rnnlm predict lstm_b: (400,)
-        TimeLSTM(lstm_Wx, lstm_Wh, lstm_b, stateful=True),
+        lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')
+        # print("Encoder __init__ lstm_Wx:", lstm_Wx.shape)  # Encoder __init__ lstm_Wx: (16, 1024)
+
+        lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')
+        # print("Encoder __init__ lstm_Wh:", lstm_Wh.shape)  # Encoder __init__ lstm_Wh: (256, 1024)
+
+        lstm_b = np.zeros(4 * H).astype('f')
+        # print("Encoder __init__ lstm_b:", lstm_b.shape)  # Encoder __init__ lstm_b: (1024,)
+
+        self.lstm = TimeLSTM(lstm_Wx, lstm_Wh, lstm_b, stateful=False)
+
         """
         self.params = [Wx, Wh, b]
         self.grads = [np.zeros_like(Wx), np.zeros_like(Wh), np.zeros_like(b)]
@@ -225,24 +239,25 @@ class TimeLSTM:
         self.stateful = stateful
 
     def forward(self, xs):
-        # print("TimeLSTM forward xs:", xs.shape)  # TimeLSTM forward xs: (20, 35, 100)
+        # print("TimeLSTM forward xs:", xs.shape)  # TimeLSTM forward xs: (128, 29, 16)
         Wx, Wh, b = self.params
         N, T, D = xs.shape
         H = Wh.shape[0]
-        # print(N, T, D, H)  # 20 35 100 100
+        # print(N, T, D, H)  # 128, 29, 16 256
 
         self.layers = []
-        hs = np.empty((N, T, H), dtype='f')
+        hs = np.empty((N, T, H), dtype='f')  # (128, 29, 256)
 
         if not self.stateful or self.h is None:
-            self.h = np.zeros((N, H), dtype='f')
+            self.h = np.zeros((N, H), dtype='f')  # (128, 256)
         if not self.stateful or self.c is None:
-            self.c = np.zeros((N, H), dtype='f')
+            self.c = np.zeros((N, H), dtype='f')  # (128, 256)
 
         for t in range(T):
             layer = LSTM(*self.params)
-            self.h, self.c = layer.forward(xs[:, t, :], self.h, self.c)
-            hs[:, t, :] = self.h
+            self.h, self.c = layer.forward(xs[:, t, :], self.h,
+                                           self.c)  # (128, 256)
+            hs[:, t, :] = self.h  # (128, 29, 256)
 
             self.layers.append(layer)
 

@@ -9,14 +9,26 @@ from common.base_model import BaseModel
 class Encoder:
 
     def __init__(self, vocab_size, wordvec_size, hidden_size):
+        """
+        vocab_size = len(char_to_id)  # vocab_size: 59
+
+        wordvec_size = 16
+
+        hidden_size = 256
+        """
         V, D, H = vocab_size, wordvec_size, hidden_size
-        # print("Encoder __init__ V, D, H:", V, D, H)  # Encoder __init__ V, D, H: 13 16 128
+        # print("Encoder __init__ V, D, H:", V, D, H)  # Encoder __init__ V, D, H: 59 16 256
         rn = np.random.randn
 
         embed_W = (rn(V, D) / 100).astype('f')
+        # print("Encoder __init__ embed_W:", embed_W.shape)  # Encoder __init__ embed_W: (59, 16)
+
         lstm_Wx = (rn(D, 4 * H) / np.sqrt(D)).astype('f')
+        # print("Encoder __init__ lstm_Wx:", lstm_Wx.shape)  # Encoder __init__ lstm_Wx: (16, 1024)
         lstm_Wh = (rn(H, 4 * H) / np.sqrt(H)).astype('f')
+        # print("Encoder __init__ lstm_Wh:", lstm_Wh.shape)  # Encoder __init__ lstm_Wh: (256, 1024)
         lstm_b = np.zeros(4 * H).astype('f')
+        # print("Encoder __init__ lstm_b:", lstm_b.shape)  # Encoder __init__ lstm_b: (1024,)
 
         self.embed = TimeEmbedding(embed_W)
         self.lstm = TimeLSTM(lstm_Wx, lstm_Wh, lstm_b, stateful=False)
